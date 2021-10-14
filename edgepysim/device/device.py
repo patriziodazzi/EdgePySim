@@ -1,5 +1,5 @@
 import string
-from resource.resource import Resource
+from edgepysim.resource import Resource
 
 
 class Device(object):

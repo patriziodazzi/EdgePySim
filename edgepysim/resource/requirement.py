@@ -1,4 +1,4 @@
-from resource.resource import Resource
+from .resource import Resource
 
 
 class ResourceRequirement(Resource):

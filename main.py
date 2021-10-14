@@ -3,8 +3,8 @@ import simpy
 
 # Press ⌃R to execute it or replace it with your code.
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
-from resource.resource import Resource
-from resource.requirement import ResourceRequirement
+from edgepysim.resource.resource import Resource
+from edgepysim.resource.requirement import ResourceRequirement
 
 
 def print_hi(name):

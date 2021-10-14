@@ -1,5 +1,5 @@
-from device.device import CloudDevice, EdgeDevice
-from resource.resource import Resource
+from edgepysim.device.device import CloudDevice, EdgeDevice
+from edgepysim.resource.resource import Resource
 
 
 class ComputingInfrastructure(object):
