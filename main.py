@@ -3,6 +3,7 @@ import simpy
 
 # Press ⌃R to execute it or replace it with your code.
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+from edgepysim.application import Microservice
 from edgepysim.resource.resource import Resource
 from edgepysim.resource.requirement import ResourceRequirement
 
@@ -29,3 +30,5 @@ if __name__ == '__main__':
 
     r = Resource("id", "value")
     rr = ResourceRequirement("id", "value")
+
+    ms = Microservice("app", [], 5000, True)

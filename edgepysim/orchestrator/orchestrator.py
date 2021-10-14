@@ -22,6 +22,7 @@ class CloudOrchestrator(Orchestrator):
     def deploy(self, services: set[Microservice]) -> bool:
         pass
 
+
 class EdgeOrchestrator(Orchestrator):
     def __init__(self, edge_cluster: EdgeCluster):
         super().__init__()

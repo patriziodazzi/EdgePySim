@@ -1,2 +1,2 @@
-from requirement import *
+from .requirement import *
 from resource import *
