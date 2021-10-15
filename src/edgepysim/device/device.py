@@ -1,8 +1,8 @@
 import string
 import abc
 
-from edgepysim.application import Microservice
-from edgepysim.resource import Resource
+from ..application import Microservice
+from ..resource import Resource
 
 
 class Device(object):
@@ -42,6 +42,8 @@ class EdgeDevice(Device):
         # transfer the image
 
         # allocate resources
+        pass
+
 
 class CloudDevice(Device):
 

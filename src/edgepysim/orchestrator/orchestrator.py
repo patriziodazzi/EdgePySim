@@ -1,5 +1,5 @@
-from edgepysim.application import Microservice, Application
-from edgepysim.infrastructure import EdgeCluster, Cloud
+from ..application import Microservice, Application
+from ..infrastructure import EdgeCluster, Cloud
 
 
 class Orchestrator(object):

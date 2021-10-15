@@ -1,4 +1,4 @@
-from edgepysim.orchestrator import GlobalOrchestrator
+from ..orchestrator import GlobalOrchestrator
 from .infrastructure import ComputingInfrastructure
 
 

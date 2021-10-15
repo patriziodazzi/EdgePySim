@@ -1,6 +1,6 @@
 import string
 
-from edgepysim.resource import ResourceRequirement
+from ..resource import ResourceRequirement
 
 
 class Microservice(object):
