@@ -2,7 +2,8 @@ import string
 import abc
 
 from ..application import Microservice
-from ..resource import Resource
+from edgepysim.application.application import Image
+from edgepysim.resource.resource import Resource
 
 
 class Device(object):
@@ -11,15 +12,19 @@ class Device(object):
         self.resources = resources
 
     @abc.abstractmethod
-    def get_resources_information(self) -> set[Resource]:
-        pass
-
-    @abc.abstractmethod
-    def store_image(self) -> bool:
+    def resources(self) -> set[Resource]:
         pass
 
     @abc.abstractmethod
     def is_image_available(self) -> bool:
+        pass
+
+    @abc.abstractmethod
+    def get_image(self) -> Image:
+        pass
+
+    @abc.abstractmethod
+    def store_image(self) -> bool:
         pass
 
     @abc.abstractmethod
