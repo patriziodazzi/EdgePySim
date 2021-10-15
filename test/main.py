@@ -3,7 +3,7 @@ import simpy
 
 # Press ⌃R to execute it or replace it with your code.
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
-from edgepysim.application import Microservice
+from edgepysim.application.application import Microservice
 from edgepysim.resource.resource import Resource
 from edgepysim.resource.requirement import ResourceRequirement
 

@@ -15,7 +15,11 @@ class Device(object):
         pass
 
     @abc.abstractmethod
-    def transfer_image(self) -> bool:
+    def store_image(self) -> bool:
+        pass
+
+    @abc.abstractmethod
+    def is_image_available(self) -> bool:
         pass
 
     @abc.abstractmethod
