@@ -21,4 +21,4 @@ class Orchestrator(object):
 
     @staticmethod
     def is_device_satisfying_all_requirements(dev: Device, rs: RequirementSet) -> bool:
-        return all(map(lambda r: Orchestrator.is_device_satisfying_requirement(dev, r), rs))
+        return all(map(lambda r: Orchestrator.is_device_satisfying_requirement(dev, r), rs.requirement_set))

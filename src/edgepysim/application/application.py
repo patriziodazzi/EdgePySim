@@ -20,7 +20,7 @@ class Image(object):
 class Microservice(object):
 
     def __init__(self, name: string, requirements: list[Requirement], image: Image, has_volumes=False,
-                 volumes: set[Volume] = None, batch=False, length: int = -1):
+                 volumes: list[Volume] = None, batch=False, length: int = -1):
         # Mandatory arguments (name, requirement, image)
         self.requirements = requirements
         self.name = name
@@ -65,7 +65,7 @@ class Application(object):
         self.components = components
         self.name = name
 
-    def get_components(self) -> set[Microservice]:
+    def get_components(self) -> list[Microservice]:
         return self.components
 
     def get_name(self) -> string:

@@ -30,26 +30,11 @@ class Requirement(abc.ABC):
 
         return False
 
-    # def is_satisfied_by_device(self, dev) -> bool:
-    #
-    #     available_resources = dev.get_resources()
-    #
-    #     actual_resource = None
-    #     for i_rt, i_rd in available_resources.items():
-    #         if i_rt == self.rd.res_type:
-    #             actual_resource = i_rd
-    #
-    #     if not actual_resource:
-    #         return False
-    #
-    #     return self.is_satisfied_by_resource(actual_resource)
-
 
 class RequirementSet(object):
 
     def __init__(self, reqs: list[Requirement]):
         self.requirement_set = reqs
-
 
 
 class IntegerRequirement(Requirement):
