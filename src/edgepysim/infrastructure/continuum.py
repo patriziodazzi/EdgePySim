@@ -1,5 +1,5 @@
 from edgepysim.orchestrator.orchestrator import GlobalOrchestrator
-from edgepysim.infrastructure.infrastructure import ComputingInfrastructure
+from edgepysim.infrastructure.cluster import ComputingInfrastructure
 
 
 class ComputingContinuum(object):

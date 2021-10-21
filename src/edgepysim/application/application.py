@@ -19,7 +19,7 @@ class Image(object):
 
 class Microservice(object):
 
-    def __init__(self, name: string, requirements: set[Requirement], image: Image, has_volumes=False,
+    def __init__(self, name: string, requirements: list[Requirement], image: Image, has_volumes=False,
                  volumes: set[Volume] = None, batch=False, length: int = -1):
         # Mandatory arguments (name, requirement, image)
         self.requirements = requirements
@@ -29,7 +29,7 @@ class Microservice(object):
         # References to volumes (if any)
         if volumes is None:
             volumes = {}
-        assert has_volumes == (len(volumes) <= 0), "Error in the setting of Microservice volumes"
+        assert has_volumes == (len(volumes) > 0), "Error in the setting of Microservice volumes"
         self.has_volumes = has_volumes
         self.volumes = volumes
 
@@ -41,7 +41,7 @@ class Microservice(object):
     def get_name(self) -> string:
         return self.name
 
-    def get_requirements(self) -> set[Requirement]:
+    def get_requirements(self) -> list[Requirement]:
         return self.requirements
 
     def get_image(self) -> Image:
@@ -50,7 +50,7 @@ class Microservice(object):
     def has_volumes(self) -> bool:
         return self.has_volumes
 
-    def get_volumes(self) -> set[Volume]:
+    def get_volumes(self) -> list[Volume]:
         return self.volumes
 
     def is_batch(self) -> bool:
@@ -61,7 +61,7 @@ class Microservice(object):
 
 
 class Application(object):
-    def __init__(self, name: string, components: set[Microservice]):
+    def __init__(self, name: string, components: list[Microservice]):
         self.components = components
         self.name = name
 

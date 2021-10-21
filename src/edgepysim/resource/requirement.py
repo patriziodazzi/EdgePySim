@@ -46,14 +46,14 @@ class Requirement(abc.ABC):
 
 class RequirementSet(object):
 
-    def __init__(self, reqs: set[Requirement]):
+    def __init__(self, reqs: list[Requirement]):
         self.requirement_set = reqs
 
     def are_satisfied_by_device(self, dev) -> bool:
         return all(map(lambda r: r.is_satisfied_by_device(dev), self.requirement_set))
 
 
-class GenericIntegerRequirement(Requirement):
+class IntegerRequirement(Requirement):
 
     def __init__(self, rd: ResourceDescriptor, matching: string):
         super().__init__(rd, matching)
@@ -63,21 +63,21 @@ class GenericIntegerRequirement(Requirement):
         return self.matching
 
 
-class NetworkBandwidthRequirement(GenericIntegerRequirement):
+class NetworkBandwidthRequirement(IntegerRequirement):
     def __init__(self, res_value: string):
         super().__init__(IntegerResourceDescriptor(ResourceType.NETWORK_BANDWIDTH, res_value), matching="ge")
 
 
-class StorageSpaceRequirement(GenericIntegerRequirement):
+class StorageSpaceRequirement(IntegerRequirement):
     def __init__(self, res_value: string):
         super().__init__(IntegerResourceDescriptor(ResourceType.STORAGE, res_value), matching="ge")
 
 
-class MemoryAmountRequirement(GenericIntegerRequirement):
+class MemoryAmountRequirement(IntegerRequirement):
     def __init__(self, res_value: string):
         super().__init__(IntegerResourceDescriptor(ResourceType.MEMORY_AMOUNT, res_value), matching="ge")
 
 
-class ProcessingCapacityResourceRequirement(GenericIntegerRequirement):
+class ProcessingCapacityResourceRequirement(IntegerRequirement):
     def __init__(self, res_value: string):
         super().__init__(IntegerResourceDescriptor(ResourceType.COMPUTING_CAPACITY, res_value), matching="ge")

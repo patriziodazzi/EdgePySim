@@ -3,11 +3,14 @@ from edgepysim import *
 
 
 class Device(object):
+    num_of_devices: int = 0
 
-    def __init__(self, resources: dict[ResourceType, ResourceDescriptor]):
-        self.resources = resources
+    def __init__(self, resources: list[ResourceDescriptor]):
+        self.resources: dict[ResourceType, ResourceDescriptor] = {res.get_type(): res for res in resources}
         self.images: dict[string, Image] = {}
         self.microservices: dict[string, Microservice] = {}
+        Device.num_of_devices += 1
+        self.name = "device." + str(Device.num_of_devices)
 
     # private service methods
     def __enough_space_for_the_image__(self, size) -> bool:
@@ -33,6 +36,9 @@ class Device(object):
         pass
 
     # public methods
+    def get_name(self):
+        return self.name
+
     def get_resources(self) -> dict[ResourceType, ResourceDescriptor]:
         return self.resources
 
@@ -85,7 +91,7 @@ class Device(object):
 
 class EdgeDevice(Device):
 
-    def __init__(self, position: tuple[float, float], resources: dict[ResourceType, ResourceDescriptor]):
+    def __init__(self, position: tuple[float, float], resources: list[ResourceDescriptor]):
         super().__init__(resources)
         self.position = position
 
@@ -95,7 +101,7 @@ class EdgeDevice(Device):
 
 class CloudDevice(Device):
 
-    def __init__(self, rack: string, resources: dict[ResourceType, ResourceDescriptor]):
+    def __init__(self, rack: string, resources: list[ResourceDescriptor]):
         super().__init__(resources)
         self.rack = rack
 

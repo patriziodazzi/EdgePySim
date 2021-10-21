@@ -70,3 +70,27 @@ class IntegerResourceDescriptor(ResourceDescriptor):
 
     def __sub__(self, other):
         return int(self.res_value) - int(other.res_value)
+
+
+class MemoryAmountResourceDescriptor(IntegerResourceDescriptor):
+
+    def __init__(self, res_value: string):
+        super().__init__(ResourceType.MEMORY_AMOUNT, res_value)
+
+
+class NetworkBandwidthResourceDescriptor(IntegerResourceDescriptor):
+
+    def __init__(self, res_value: string):
+        super().__init__(ResourceType.NETWORK_BANDWIDTH, res_value)
+
+
+class ProcessingCapacityResourceDescriptor(IntegerResourceDescriptor):
+
+    def __init__(self, res_value: string):
+        super().__init__(ResourceType.COMPUTING_CAPACITY, res_value)
+
+
+class StorageSpaceResourceDescriptor(IntegerResourceDescriptor):
+
+    def __init__(self, res_value: string):
+        super().__init__(ResourceType.STORAGE, res_value)
