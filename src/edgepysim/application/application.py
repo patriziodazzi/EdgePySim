@@ -1,5 +1,4 @@
 import string
-# from edgepysim.resource.requirement import Requirement
 from edgepysim import *
 
 
