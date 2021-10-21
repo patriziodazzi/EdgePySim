@@ -1,9 +1,5 @@
 import string
 
-# from edgepysim.application.application import Microservice
-# from edgepysim.application.application import Image
-# from edgepysim.resource.resource import Resource
-# from edgepysim.resource.resource import ResourceType
 from edgepysim import *
 
 
@@ -38,7 +34,7 @@ class Device(object):
         pass
 
     # public methods
-    def resources(self) -> dict[ResourceType, ResourceDescriptor]:
+    def get_resources(self) -> dict[ResourceType, ResourceDescriptor]:
         return self.resources
 
     def is_image_available(self, name: string) -> bool:

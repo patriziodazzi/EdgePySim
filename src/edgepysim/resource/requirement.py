@@ -1,9 +1,6 @@
 import abc
 import string
 
-# from edgepysim.device.device import Device
-# from edgepysim.resource.resource import ResourceDescriptor, ResourceType  # ,IntegerResourceDescriptor
-
 from edgepysim import *
 
 
@@ -32,9 +29,9 @@ class Requirement(abc.ABC):
 
         return False
 
-    def is_satisfied_by_device(self, dev: Device) -> bool:
+    def is_satisfied_by_device(self, dev) -> bool:
 
-        available_resources = dev.resources()
+        available_resources = dev.get_resources()
 
         actual_resource = None
         for i_rt, i_rd in available_resources.items():
@@ -44,18 +41,16 @@ class Requirement(abc.ABC):
         if not actual_resource:
             return False
 
-        if self.__matching_rule__() == "eq":
-            return actual_resource == self.rd
-        elif self.__matching_rule__() == "gt":
-            return actual_resource > self.rd
-        elif self.__matching_rule__() == "lt":
-            return actual_resource < self.rd
-        elif self.__matching_rule__() == "ge":
-            return actual_resource >= self.rd
-        elif self.__matching_rule__() == "le":
-            return actual_resource <= self.rd
+        return self.is_satisfied_by_resource(actual_resource)
 
-        return False
+
+class RequirementSet(object):
+
+    def __init__(self, reqs: set[Requirement]):
+        self.requirement_set = reqs
+
+    def are_satisfied_by_device(self, dev) -> bool:
+        return all(map(lambda r: r.is_satisfied_by_device(dev), self.requirement_set))
 
 
 class GenericIntegerRequirement(Requirement):
@@ -71,19 +66,19 @@ class GenericIntegerRequirement(Requirement):
 
 class NetworkBandwidthRequirement(GenericIntegerRequirement):
     def __init__(self, res_value: string):
-        super().__init__(ResourceDescriptor(ResourceType.NETWORK_BANDWIDTH, res_value), matching="ge")
+        super().__init__(IntegerResourceDescriptor(ResourceType.NETWORK_BANDWIDTH, res_value), matching="ge")
 
 
 class StorageSpaceRequirement(GenericIntegerRequirement):
     def __init__(self, res_value: string):
-        super().__init__(ResourceDescriptor(ResourceType.STORAGE, res_value), matching="ge")
+        super().__init__(IntegerResourceDescriptor(ResourceType.STORAGE, res_value), matching="ge")
 
 
 class MemoryAmountRequirement(GenericIntegerRequirement):
     def __init__(self, res_value: string):
-        super().__init__(ResourceDescriptor(ResourceType.MEMORY_AMOUNT, res_value), matching="ge")
+        super().__init__(IntegerResourceDescriptor(ResourceType.MEMORY_AMOUNT, res_value), matching="ge")
 
 
 class ProcessingCapacityResourceRequirement(GenericIntegerRequirement):
     def __init__(self, res_value: string):
-        super().__init__(ResourceDescriptor(ResourceType.COMPUTING_CAPACITY, res_value), matching="ge")
+        super().__init__(IntegerResourceDescriptor(ResourceType.COMPUTING_CAPACITY, res_value), matching="ge")

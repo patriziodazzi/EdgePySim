@@ -1,18 +1,7 @@
 import abc
 import string
-from enum import Enum
 
-
-class ResourceType(Enum):
-    STORAGE = 1
-    MEMORY_AMOUNT = 2
-    COMPUTING_CAPACITY = 3
-    NETWORK_BANDWIDTH = 4
-    FPGA = 5
-    GPU = 6
-    WIFI = 7
-    GPS = 8
-    RACK = 9
+from edgepysim import ResourceType
 
 
 class ResourceDescriptor(abc.ABC):
