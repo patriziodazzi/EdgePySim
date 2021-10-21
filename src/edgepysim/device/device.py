@@ -1,5 +1,5 @@
 import string
-from edgepysim import *
+from edgepysim import ResourceType, ResourceDescriptor, Microservice, Image
 
 
 class Device(object):
