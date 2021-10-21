@@ -56,7 +56,6 @@ class RequirementSet(object):
 class GenericIntegerRequirement(Requirement):
 
     def __init__(self, rd: ResourceDescriptor, matching: string):
-        #        IntegerResourceDescriptor.__init__(self, res_type, res_value, matching)
         super().__init__(rd, matching)
         self.matching = matching
 
