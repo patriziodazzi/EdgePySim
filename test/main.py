@@ -4,8 +4,8 @@ if __name__ == '__main__':
 
     # Create Application
     img = Image("ubuntu", 5000)
-    reqs = [StorageSpaceRequirement("2000"),
-            NetworkBandwidthRequirement("200"),
+    reqs = [StorageSpaceRequirement("1500"),
+            NetworkBandwidthRequirement("10"),
             MemoryAmountRequirement("512")]
     ms = Microservice("ms1", reqs, img)
     app = Application("Linux", [ms])
@@ -23,4 +23,13 @@ if __name__ == '__main__':
     # Create cloud
     cloud_orchestrator = CloudOrchestrator(devices)
     c = Cloud(devices, cloud_orchestrator)
+
+    iss = Orchestrator.is_device_satisfying_all_requirements(devices[0], ms.requirements)
+
+    print(iss)
+    ret = cloud_orchestrator.list_of_suitable_devices(ms)
+    for x in ret:
+        print(x.get_name())
+
+
 

@@ -18,7 +18,9 @@ class DomainOrchestrator(Orchestrator):
         pass
 
     def list_of_suitable_devices(self, ms: Microservice) -> list[Device]:
-        pass
+        suitable_devices = [d for d in self.resources
+                            if (Orchestrator.is_device_satisfying_all_requirements(d, ms.requirements))]
+        return suitable_devices
 
 
 class CloudOrchestrator(DomainOrchestrator):

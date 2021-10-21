@@ -56,7 +56,7 @@ class ResourceDescriptor(abc.ABC):
         pass
 
     def get_type(self) -> ResourceType:
-        return self.res_value
+        return self.res_type
 
     def set_value(self, value):
         self.res_value = value
