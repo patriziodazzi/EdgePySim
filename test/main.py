@@ -3,9 +3,11 @@ import simpy
 
 # Press ⌃R to execute it or replace it with your code.
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
-from edgepysim.application.application import Microservice
-from edgepysim.resource.resource import Resource
-from edgepysim.resource.requirement import ResourceRequirement
+# from edgepysim.application.application import Microservice
+# from edgepysim.resource.resource import ResourceType, IntegerResourceDescriptor
+# from edgepysim.resource.requirement import GenericIntegerRequirement
+
+from edgepysim import *
 
 
 def print_hi(name):
@@ -28,7 +30,21 @@ if __name__ == '__main__':
     env.process(clock(env, 'slow', 1))
     env.run(until=2.1)
 
-    r = Resource("id", "value")
-    rr = ResourceRequirement("id", "value")
+    # r = Resource("id", "value")
+    # rr = ResourceRequirement("id", "value")
 
-    ms = Microservice("app", [], 5000, True)
+    # ms = Microservice("app", [], 5000, True)
+
+    gir = GenericIntegerRequirement(IntegerResourceDescriptor(ResourceType.STORAGE, "1000"), "ge")
+
+    ird = IntegerResourceDescriptor(ResourceType.STORAGE, "2500")
+
+    print(gir.rd.res_value)
+    print(gir.rd.res_type)
+
+    print(ird.res_value)
+    print(ird.res_type)
+
+    ret = gir.is_satisfied_by_resource(ird)
+
+    print(ret)

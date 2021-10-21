@@ -1,6 +1,6 @@
 import string
-
-from edgepysim.resource.requirement import ResourceRequirement
+# from edgepysim.resource.requirement import Requirement
+from edgepysim import *
 
 
 class Volume(object):
@@ -14,11 +14,13 @@ class Image(object):
     def __init__(self, name: string, size: int):
         self.name = name
         self.size = size
+        self.stored_in_device = None
+        self.in_use_on_this_device = False
 
 
 class Microservice(object):
 
-    def __init__(self, name: string, requirements: set[ResourceRequirement], image: Image, has_volumes=False,
+    def __init__(self, name: string, requirements: set[Requirement], image: Image, has_volumes=False,
                  volumes: set[Volume] = None, batch=False, length: int = -1):
         # Mandatory arguments (name, requirement, image)
         self.requirements = requirements
@@ -26,8 +28,9 @@ class Microservice(object):
         self.image = image
 
         # References to volumes (if any)
-        if volumes is None: volumes = {}
-        assert has_volumes == (len(volumes) > 0), "Error in the setting of Microservice volumes"
+        if volumes is None:
+            volumes = {}
+        assert has_volumes == (len(volumes) <= 0), "Error in the setting of Microservice volumes"
         self.has_volumes = has_volumes
         self.volumes = volumes
 
@@ -39,7 +42,7 @@ class Microservice(object):
     def get_name(self) -> string:
         return self.name
 
-    def get_requirements(self) -> set[ResourceRequirement]:
+    def get_requirements(self) -> set[Requirement]:
         return self.requirements
 
     def get_image(self) -> Image:
