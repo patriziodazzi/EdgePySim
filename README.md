@@ -1,3 +1,3 @@
-# EdgePySim
+# simulator1edge
 
-Cloud/Edge simulator based on SimPy
+Cloud/Edge simulator 
