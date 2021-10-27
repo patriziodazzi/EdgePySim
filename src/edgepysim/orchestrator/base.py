@@ -1,9 +1,10 @@
 from edgepysim import *
+from edgepysim.network.base import Network
 
 
 class Orchestrator(object):
-    def __init__(self):
-        pass
+    def __init__(self, network: Network):
+        self.network = network
 
     @staticmethod
     def is_device_satisfying_requirement(dev: Device, req: Requirement) -> bool:
