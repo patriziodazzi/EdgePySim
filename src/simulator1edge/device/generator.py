@@ -2,7 +2,8 @@ import string
 from abc import ABC, abstractmethod
 from typing import Any
 
-from simulator1edge.device.base import Device, CloudDevice
+from simulator1edge.device.base import Device
+from simulator1edge.device.concrete import CloudDevice
 from simulator1edge.resource.descriptor import ResourceDescriptor
 
 
@@ -28,7 +29,7 @@ class CloudDeviceFactory(DeviceFactory):
         if features['cloud_name']:
             cloud_name = features['cloud_name']
 
-        devices: list[CloudDevice] = []
+        devices: list[Device] = []
         for device_template, device_cardinality in description:
             for i in range(device_cardinality):
                 devices.append(CloudDevice(cloud_name, device_template))

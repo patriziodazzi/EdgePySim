@@ -1,5 +1,6 @@
 import string
-from simulator1edge import *
+
+from simulator1edge.resource.requirement import Requirement
 
 
 class Volume(object):

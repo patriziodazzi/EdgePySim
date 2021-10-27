@@ -1,7 +1,7 @@
-from simulator1edge import *
 import itertools
 
-from simulator1edge.device.base import NetworkSwitchRouter
+from simulator1edge.device.base import Device
+from simulator1edge.device.concrete import CloudDevice, NetworkSwitchRouter
 from simulator1edge.network.base import Network
 
 
@@ -56,11 +56,3 @@ class CloudAreaNetwork(Network):
     def remove_device(self, node: Device) -> bool:
         self.graph.remove_node(node)
         return True
-
-    @property
-    def gateway(self) -> Device:
-        return self._gateway
-
-    @gateway.setter
-    def gateway(self, value: Device):
-        self._gateway = value

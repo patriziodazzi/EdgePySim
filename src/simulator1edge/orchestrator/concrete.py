@@ -1,10 +1,14 @@
-from simulator1edge import Orchestrator, Application, Microservice, Device, CloudDevice, EdgeDevice
+from simulator1edge.application.base import Application, Microservice
+from simulator1edge.infrastructure.cluster import ComputingInfrastructure
+from simulator1edge.device.base import Device
 from simulator1edge.network.base import Network
+from simulator1edge.orchestrator.base import Orchestrator
 
 
-class GlobalOrchestrator(Orchestrator):
-    def __init__(self, network: Network):
-        super().__init__(network)
+class ContinuumOrchestrator(Orchestrator):
+    def __init__(self, computing_infrastructures: list[ComputingInfrastructure], network: Network):
+        super().__init__(computing_infrastructures, network)
+        self._computing_infrastructures = computing_infrastructures
 
     def deploy(self, application: Application) -> bool:
         pass
@@ -12,8 +16,7 @@ class GlobalOrchestrator(Orchestrator):
 
 class DomainOrchestrator(Orchestrator):
     def __init__(self, devices: list[Device], network: Network):
-        super().__init__(network)
-        self.resources = devices
+        super().__init__(devices, network)
 
     def deploy(self, services: list[Microservice]) -> bool:
         pass
@@ -25,7 +28,7 @@ class DomainOrchestrator(Orchestrator):
 
 
 class CloudOrchestrator(DomainOrchestrator):
-    def __init__(self, cloud_resources: list[CloudDevice], network: Network):
+    def __init__(self, cloud_resources: list[Device], network: Network):
         super().__init__(cloud_resources, network)
 
     def deploy(self, services: list[Microservice]) -> bool:
@@ -33,7 +36,7 @@ class CloudOrchestrator(DomainOrchestrator):
 
 
 class EdgeOrchestrator(DomainOrchestrator):
-    def __init__(self, edge_resources: list[EdgeDevice], network: Network):
+    def __init__(self, edge_resources: list[Device], network: Network):
         super().__init__(edge_resources, network)
 
     def deploy(self, services: list[Microservice]) -> bool:

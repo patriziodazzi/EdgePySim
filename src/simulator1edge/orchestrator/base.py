@@ -1,10 +1,21 @@
-from simulator1edge import *
+
+from simulator1edge.device.base import Device
 from simulator1edge.network.base import Network
+from simulator1edge.resource.requirement import Requirement
 
 
 class Orchestrator(object):
-    def __init__(self, network: Network):
-        self.network = network
+    def __init__(self, resources: list, network: Network):
+        self._network = network
+        self._resources = resources
+
+    @property
+    def resources(self):
+        return self._resources
+
+    @property
+    def network(self):
+        return self._network
 
     @staticmethod
     def is_device_satisfying_requirement(dev: Device, req: Requirement) -> bool:

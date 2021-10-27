@@ -1,8 +1,8 @@
 import abc
 import string
 
-from simulator1edge import ResourceDescriptor, NetworkBandwidthResourceDescriptor, StorageSpaceResourceDescriptor, \
-    MemoryAmountResourceDescriptor, ProcessingCapacityResourceDescriptor
+from simulator1edge.resource.descriptor import ResourceDescriptor, NetworkBandwidthResourceDescriptor, \
+    StorageSpaceResourceDescriptor, MemoryAmountResourceDescriptor, ProcessingCapacityResourceDescriptor
 
 
 class Requirement(abc.ABC):

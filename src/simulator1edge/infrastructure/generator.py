@@ -1,25 +1,14 @@
 import string
 
 from abc import ABC, abstractmethod
-from enum import Enum
 from typing import Any, cast
 
-from simulator1edge.device.base import Device, CloudDevice
+from simulator1edge.device.base import Device
+from simulator1edge.device.concrete import CloudDevice
 from simulator1edge.infrastructure.cluster import ComputingInfrastructure, Cloud
 from simulator1edge.network.areanetwork import CloudAreaNetwork
 from simulator1edge.orchestrator.base import Orchestrator
 from simulator1edge.orchestrator.concrete import CloudOrchestrator
-
-
-class FeatureType(str, Enum):
-    STORAGE = 'storage'
-    NETWORK = 'network'
-    DEVICES = 'devices'
-    EXTERNAL_NETWORK_BANDWIDTH = 'external_bandwidth'
-    INTERNAL_NETWORK_BANDWIDTH = 'internal_bandwidth'
-    ORCHESTRATOR = 'orchestrator'
-    GATEWAY = 'gateway'
-    IS_ROUTED = 'is_routed'
 
 
 class ComputingInfrastructureFactory(ABC):
@@ -35,6 +24,10 @@ class ComputingInfrastructureFactory(ABC):
         Returns the Orchestrator associated to the ComputingInfrastructure.
     """
 
+    NTWRK_FEAT = 'network'
+    DEVS_FEAT = 'devices'
+    ORCHS_FEAT = 'orchestrator'
+
     def __init__(self, features: dict[string, Any] = None) -> None:
         """
         Parameters
@@ -45,20 +38,20 @@ class ComputingInfrastructureFactory(ABC):
 
         self.features = features
 
-        if FeatureType.DEVICES in features:
-            self._devices = features[FeatureType.DEVICES]
+        if ComputingInfrastructureFactory.DEVS_FEAT in features:
+            self._devices = features[ComputingInfrastructureFactory.DEVS_FEAT]
         else:
             self._devices = None
 
         # If network is provided, does not create it
-        if FeatureType.NETWORK in self.features:
-            self._network = self.features[FeatureType.NETWORK]
+        if ComputingInfrastructureFactory.NTWRK_FEAT in self.features:
+            self._network = self.features[ComputingInfrastructureFactory.NTWRK_FEAT]
         else:
             self._network = None
 
         # If orchestrator is provided, does not create it
-        if FeatureType.ORCHESTRATOR in self.features:
-            self._orchestrator = self.features[FeatureType.ORCHESTRATOR]
+        if ComputingInfrastructureFactory.ORCHS_FEAT in self.features:
+            self._orchestrator = self.features[ComputingInfrastructureFactory.ORCHS_FEAT]
         else:
             self._orchestrator = None
 
@@ -92,39 +85,46 @@ class ComputingInfrastructureFactory(ABC):
 
 
 class CloudFactory(ComputingInfrastructureFactory):
-
     # Standard Values
-    __STD_INTL_BANDWIDTH = 100
-    __STD_EXTL_BANDWIDTH = 100
+    __STD_INTL_NET_BNDWDTH = 100
+    __STD_EXTL_NET_BNDWDTH = 100
     __STD_IS_RTD = True
     __STD_GTWY = None
+
+    # Parameters Keys
+    INTL_NET_BNDWDTH_FEAT = 'internal_bandwidth'
+    EXTL_NET_BNDWDTH_FEAT = 'external_bandwidth'
+    IS_RTD_FEAT = 'is_routed'
+    GTWY_FEAT = 'gateway'
 
     def __init__(self, features: dict[string, Any] = None):
         super().__init__(features)
 
         # If internal_bandwidth is provided, uses it, otherwise uses the standard value
-        if FeatureType.INTERNAL_NETWORK_BANDWIDTH in self.features:
-            self._internal_bandwidth = self.features[FeatureType.INTERNAL_NETWORK_BANDWIDTH]
+        if CloudFactory.INTL_NET_BNDWDTH_FEAT in self.features:
+            self._internal_bandwidth = self.features[CloudFactory.INTL_NET_BNDWDTH_FEAT]
         else:
-            self._internal_bandwidth = CloudFactory.__STD_INTL_BANDWIDTH
+            self._internal_bandwidth = CloudFactory.__STD_INTL_NET_BNDWDTH
 
         # If external_bandwidth is provided, uses it, otherwise uses the standard value
-        if FeatureType.EXTERNAL_NETWORK_BANDWIDTH in self.features:
-            self._external_bandwidth = self.features[FeatureType.EXTERNAL_NETWORK_BANDWIDTH]
+        if CloudFactory.EXTL_NET_BNDWDTH_FEAT in self.features:
+            self._external_bandwidth = self.features[CloudFactory.EXTL_NET_BNDWDTH_FEAT]
         else:
-            self._external_bandwidth = CloudFactory.__STD_EXTL_BANDWIDTH
+            self._external_bandwidth = CloudFactory.__STD_EXTL_NET_BNDWDTH
 
         # If is_routed is provided, uses it, otherwise uses the standard value
-        if FeatureType.IS_ROUTED in self.features:
-            self._is_routed = self.features[FeatureType.IS_ROUTED]
+        if CloudFactory.IS_RTD_FEAT in self.features:
+            self._is_routed = self.features[CloudFactory.IS_RTD_FEAT]
         else:
             self._is_routed = CloudFactory.__STD_IS_RTD
 
         # If gateway is provided, uses it, otherwise uses the standard value
-        if FeatureType.GATEWAY in self.features:
-            self._gateway = self.features[FeatureType.GATEWAY]
+        if CloudFactory.GTWY_FEAT in self.features:
+            self._gateway = self.features[CloudFactory.GTWY_FEAT]
         else:
             self._gateway = CloudFactory.__STD_GTWY
+
+        self._computing_infrastructure = None
 
     @property
     def internal_bandwidth(self) -> int:
@@ -158,6 +158,10 @@ class CloudFactory(ComputingInfrastructureFactory):
     def gateway(self, value: Device):
         self._gateway = value
 
+    @property
+    def computing_infrastructure(self):
+        return self._computing_infrastructure
+
     def do_create_computing_instance(self) -> ComputingInfrastructure:
 
         # if network has not been provided, creates it
@@ -176,7 +180,7 @@ class CloudFactory(ComputingInfrastructureFactory):
             # If orchestrator is provided, specifies it, otherwise uses the shorter constructor
             self.orchestrator = CloudOrchestrator(cast(list[CloudDevice], self.devices), self.network)
 
-        self.computing_infrastructure = Cloud(cast(list[CloudDevice], self.devices),
-                                              cast(CloudOrchestrator, self.orchestrator), self.network)
+        self._computing_infrastructure = Cloud(cast(list[CloudDevice], self.devices),
+                                               cast(CloudOrchestrator, self.orchestrator), self.network)
 
-        return self.computing_infrastructure
+        return self._computing_infrastructure
