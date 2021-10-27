@@ -1,6 +1,5 @@
 from simulator1edge import *
 import itertools
-import networkx as nx
 
 from simulator1edge.device.base import NetworkSwitchRouter
 from simulator1edge.network.base import Network
@@ -20,12 +19,12 @@ class CloudAreaNetwork(Network):
         # the first device in the cloud is "elected" gateway, i.e. the node delegated to external communication
         if self.is_routed:
             if gateway:
-                self.gateway = gateway
+                self._gateway = gateway
             else:
-                self.gateway = NetworkSwitchRouter(external_bandwidth)
-                print(self.gateway)
+                self._gateway = NetworkSwitchRouter(external_bandwidth)
+                print("Gateway: "+str(self._gateway))
         else:
-            self.gateway = devices[0]
+            self._gateway = devices[0]
 
         # Generates a name for the network
         CloudAreaNetwork.num_of_cans += 1
@@ -35,8 +34,8 @@ class CloudAreaNetwork(Network):
         # cloud devices)
         for device in devices:
             self.graph.add_node(device)
-            if self.gateway not in devices:
-                self.graph.add_edge(device, self.gateway)
+            if self._gateway not in devices:
+                self.graph.add_edge(device, self._gateway)
 
         # Links all the devices one each others
         self.internal_bandwidth = internal_bandwidth
@@ -58,5 +57,10 @@ class CloudAreaNetwork(Network):
         self.graph.remove_node(node)
         return True
 
-    def get_gateway(self):
-        return self.gateway
+    @property
+    def gateway(self) -> Device:
+        return self._gateway
+
+    @gateway.setter
+    def gateway(self, value: Device):
+        self._gateway = value
