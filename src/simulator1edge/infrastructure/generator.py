@@ -1,3 +1,4 @@
+import abc
 import string
 
 from abc import ABC, abstractmethod
@@ -6,9 +7,11 @@ from typing import Any, cast
 from simulator1edge.device.base import Device
 from simulator1edge.device.concrete import CloudDevice
 from simulator1edge.infrastructure.cluster import ComputingInfrastructure, Cloud
+from simulator1edge.infrastructure.continuum import ComputingContinuum
 from simulator1edge.network.areanetwork import CloudAreaNetwork
+from simulator1edge.network.core import ComputingContinuumNetwork
 from simulator1edge.orchestrator.base import Orchestrator
-from simulator1edge.orchestrator.concrete import CloudOrchestrator
+from simulator1edge.orchestrator.concrete import CloudOrchestrator, ContinuumOrchestrator
 
 
 class ComputingInfrastructureFactory(ABC):
@@ -183,4 +186,68 @@ class CloudFactory(ComputingInfrastructureFactory):
         self._computing_infrastructure = Cloud(cast(list[CloudDevice], self.devices),
                                                cast(CloudOrchestrator, self.orchestrator), self.network)
 
+        return self._computing_infrastructure
+
+
+class IComputingContinuumBuilder(abc.ABC):
+
+    @abc.abstractmethod
+    def __init__(self):
+        pass
+
+    @abc.abstractmethod
+    def create_network(self, features: dict[string, Any]):
+        pass
+
+    @abc.abstractmethod
+    def create_orchestrator(self, features: dict[string, Any]):
+        pass
+
+    @abc.abstractmethod
+    def create_continuum(self, features: dict[string, Any]):
+        pass
+
+    @abc.abstractmethod
+    def result(self):
+        pass
+
+
+class ComputingContinuumBuildDirector(object):
+    CMP_CNT_RES_FEAT = 'computing_continuum_resources'
+
+    def __init__(self, builder: IComputingContinuumBuilder):
+        self._builder = builder
+
+    def construct(self, features: dict[string, Any]):
+        self._builder.create_network(features)
+        self._builder.create_orchestrator(features)
+        self._builder.create_continuum(features)
+
+    @property
+    def result(self):
+        return self._builder.result
+
+
+class ComputingContinuumBuilder(IComputingContinuumBuilder):
+
+    def __init__(self):
+        self._orchestrator = None
+        self._network = None
+        self._resources = None
+        self._computing_infrastructure = None
+
+    def create_network(self, features: dict[string, Any]):
+        self._resources: list[ComputingInfrastructure] = features[ComputingContinuumBuildDirector.CMP_CNT_RES_FEAT]
+        self._network = ComputingContinuumNetwork(self._resources)
+        self._network.do_link_computing_infrastructures(
+            {ComputingContinuumNetwork.TPLGY_FEAT: ComputingContinuumNetwork.CLIQ})
+
+    def create_orchestrator(self, features: dict[string, Any]):
+        self._orchestrator = ContinuumOrchestrator(self._resources, self._network)
+
+    def create_continuum(self, features: dict[string, Any]):
+        self._computing_infrastructure = ComputingContinuum(self._resources, self._orchestrator, self._network)
+
+    @property
+    def result(self):
         return self._computing_infrastructure

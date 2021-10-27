@@ -4,8 +4,8 @@ import networkx as nx
 from simulator1edge.application.base import Image, Microservice, Application
 from simulator1edge.device.concrete import NetworkSwitchRouter
 from simulator1edge.device.generator import CloudDeviceFactory
-from simulator1edge.infrastructure.continuum import ComputingContinuumBuildDirector, ComputingContinuumBuilder
-from simulator1edge.infrastructure.generator import CloudFactory, ComputingInfrastructureFactory
+from simulator1edge.infrastructure.generator import CloudFactory, ComputingInfrastructureFactory, \
+    ComputingContinuumBuildDirector, ComputingContinuumBuilder
 from simulator1edge.orchestrator.concrete import CloudOrchestrator
 from simulator1edge.resource.descriptor import StorageSpaceResourceDescriptor, NetworkBandwidthResourceDescriptor, \
     MemoryAmountResourceDescriptor
