@@ -1,5 +1,5 @@
 import string
-from edgepysim import *
+from simulator1edge import *
 
 
 class Volume(object):

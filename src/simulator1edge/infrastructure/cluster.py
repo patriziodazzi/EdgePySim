@@ -1,10 +1,10 @@
 import abc
 
-from edgepysim.device.base import Device, CloudDevice, EdgeDevice
-from edgepysim.network.areanetwork import CloudAreaNetwork
-from edgepysim.network.base import Network
-from edgepysim.orchestrator.base import Orchestrator
-from edgepysim.orchestrator.concrete import CloudOrchestrator, EdgeOrchestrator
+from simulator1edge.device.base import Device, CloudDevice, EdgeDevice
+from simulator1edge.network.areanetwork import CloudAreaNetwork
+from simulator1edge.network.base import Network
+from simulator1edge.orchestrator.base import Orchestrator
+from simulator1edge.orchestrator.concrete import CloudOrchestrator, EdgeOrchestrator
 
 
 class ComputingInfrastructure(abc.ABC):

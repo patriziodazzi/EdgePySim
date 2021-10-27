@@ -2,8 +2,8 @@ import string
 from abc import ABC, abstractmethod
 from typing import Any
 
-from edgepysim.device.base import Device, CloudDevice
-from edgepysim.resource.descriptor import ResourceDescriptor
+from simulator1edge.device.base import Device, CloudDevice
+from simulator1edge.resource.descriptor import ResourceDescriptor
 
 
 class DeviceFactory(ABC):

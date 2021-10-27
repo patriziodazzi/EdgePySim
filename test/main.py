@@ -1,19 +1,19 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 
-from edgepysim.application.base import Image, Microservice, Application
-from edgepysim.device.base import NetworkSwitchRouter, CloudDevice
-from edgepysim.device.generator import CloudDeviceFactory
-from edgepysim.infrastructure.cluster import Cloud
-from edgepysim.infrastructure.continuum import ComputingContinuum
-from edgepysim.infrastructure.generator import CloudFactory
-from edgepysim.network.areanetwork import CloudAreaNetwork
-from edgepysim.network.base import Network
-from edgepysim.network.general import EndToEndNetwork, BackboneNetwork
-from edgepysim.orchestrator.concrete import CloudOrchestrator, GlobalOrchestrator
-from edgepysim.resource.descriptor import StorageSpaceResourceDescriptor, NetworkBandwidthResourceDescriptor, \
+from simulator1edge.application.base import Image, Microservice, Application
+from simulator1edge.device.base import NetworkSwitchRouter, CloudDevice
+from simulator1edge.device.generator import CloudDeviceFactory
+from simulator1edge.infrastructure.cluster import Cloud
+from simulator1edge.infrastructure.continuum import ComputingContinuum
+from simulator1edge.infrastructure.generator import CloudFactory
+from simulator1edge.network.areanetwork import CloudAreaNetwork
+from simulator1edge.network.base import Network
+from simulator1edge.network.general import EndToEndNetwork, BackboneNetwork
+from simulator1edge.orchestrator.concrete import CloudOrchestrator, GlobalOrchestrator
+from simulator1edge.resource.descriptor import StorageSpaceResourceDescriptor, NetworkBandwidthResourceDescriptor, \
     MemoryAmountResourceDescriptor
-from edgepysim.resource.requirement import StorageSpaceRequirement, NetworkBandwidthRequirement, MemoryAmountRequirement
+from simulator1edge.resource.requirement import StorageSpaceRequirement, NetworkBandwidthRequirement, MemoryAmountRequirement
 
 
 if __name__ == '__main__':

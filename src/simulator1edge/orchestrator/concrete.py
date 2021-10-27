@@ -1,5 +1,5 @@
-from edgepysim import Orchestrator, Application, Microservice, Device, CloudDevice, EdgeDevice
-from edgepysim.network.base import Network
+from simulator1edge import Orchestrator, Application, Microservice, Device, CloudDevice, EdgeDevice
+from simulator1edge.network.base import Network
 
 
 class GlobalOrchestrator(Orchestrator):

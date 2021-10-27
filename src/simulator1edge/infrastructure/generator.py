@@ -3,11 +3,11 @@ import string
 from abc import ABC, abstractmethod
 from typing import Any
 
-from edgepysim.device.base import Device
-from edgepysim.infrastructure.cluster import ComputingInfrastructure, Cloud
-from edgepysim.network.areanetwork import CloudAreaNetwork
-from edgepysim.orchestrator.base import Orchestrator
-from edgepysim.orchestrator.concrete import CloudOrchestrator
+from simulator1edge.device.base import Device
+from simulator1edge.infrastructure.cluster import ComputingInfrastructure, Cloud
+from simulator1edge.network.areanetwork import CloudAreaNetwork
+from simulator1edge.orchestrator.base import Orchestrator
+from simulator1edge.orchestrator.concrete import CloudOrchestrator
 
 
 class ComputingInfrastructureFactory(ABC):

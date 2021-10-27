@@ -1,5 +1,5 @@
-from edgepysim import *
-from edgepysim.network.base import Network
+from simulator1edge import *
+from simulator1edge.network.base import Network
 
 
 class Orchestrator(object):

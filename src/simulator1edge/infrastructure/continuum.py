@@ -1,8 +1,8 @@
 import networkx as nx
 import networkx.algorithms.operators.binary as nx_algo
-from edgepysim.network.base import Network
-from edgepysim.orchestrator.concrete import GlobalOrchestrator
-from edgepysim.infrastructure.cluster import ComputingInfrastructure
+from simulator1edge.network.base import Network
+from simulator1edge.orchestrator.concrete import GlobalOrchestrator
+from simulator1edge.infrastructure.cluster import ComputingInfrastructure
 
 
 class ComputingContinuum(object):

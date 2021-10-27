@@ -1,6 +1,6 @@
 import string
-from edgepysim import ResourceType, ResourceDescriptor, Microservice, Image
-from edgepysim.resource.descriptor import NetworkBandwidthResourceDescriptor
+from simulator1edge import ResourceType, ResourceDescriptor, Microservice, Image
+from simulator1edge.resource.descriptor import NetworkBandwidthResourceDescriptor
 
 
 class Device(object):

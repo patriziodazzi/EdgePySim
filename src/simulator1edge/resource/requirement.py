@@ -1,7 +1,7 @@
 import abc
 import string
 
-from edgepysim import ResourceDescriptor, NetworkBandwidthResourceDescriptor, StorageSpaceResourceDescriptor, \
+from simulator1edge import ResourceDescriptor, NetworkBandwidthResourceDescriptor, StorageSpaceResourceDescriptor, \
     MemoryAmountResourceDescriptor, ProcessingCapacityResourceDescriptor
 
 

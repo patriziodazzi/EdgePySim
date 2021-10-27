@@ -1,9 +1,9 @@
-from edgepysim import *
+from simulator1edge import *
 import itertools
 import networkx as nx
 
-from edgepysim.device.base import NetworkSwitchRouter
-from edgepysim.network.base import Network
+from simulator1edge.device.base import NetworkSwitchRouter
+from simulator1edge.network.base import Network
 
 
 class CloudAreaNetwork(Network):
