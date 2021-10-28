@@ -1,4 +1,4 @@
-
+from simulator1edge.application.base import Microservice
 from simulator1edge.device.base import Device
 from simulator1edge.network.base import Network
 from simulator1edge.resource.requirement import Requirement
@@ -17,13 +17,16 @@ class Orchestrator(object):
     def network(self):
         return self._network
 
+    def list_of_candidates(self, ms: Microservice) -> list:
+        pass
+
     @staticmethod
     def is_device_satisfying_requirement(dev: Device, req: Requirement) -> bool:
-        available_resources = dev.get_resources()
+        available_resources = dev.resources
 
         actual_resource = None
         for i_rt, i_rd in available_resources.items():
-            if i_rt == req.rd.res_type:
+            if i_rt == req.rd.type:
                 actual_resource = i_rd
 
         if not actual_resource:

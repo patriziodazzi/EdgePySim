@@ -1,31 +1,41 @@
 import abc
+import copy
 import string
 from enum import Enum
 
 
-class ResourceType(Enum):
-    STORAGE = 1
-    MEMORY_AMOUNT = 2
-    COMPUTING_CAPACITY = 3
-    NETWORK_BANDWIDTH = 4
-    FPGA = 5
-    GPU = 6
-    WIFI = 7
-    GPS = 8
-    RACK = 9
+class ResourceType(str, Enum):
+    STORAGE = 'storage'
+    MEMORY_AMOUNT = 'memory_amount'
+    COMPUTING_CAPACITY = 'computing_capacity'
+    NETWORK_BANDWIDTH = 'network_bandwidth'
+    FPGA = 'FPGA'
+    GPU = 'GPU'
+    WIFI = 'WIFI'
+    GPS = 'GPS'
+    AVAILABILITY_ZONE = 'availability_zone'
 
 
 class ResourceDescriptor(abc.ABC):
 
     def __init__(self, res_type: ResourceType, res_value):
-        self.res_type = res_type
-        self.res_value = res_value
+        self.type = res_type
+        self.value = res_value
+
+    def __str__(self):
+        return str(self.type) + " : " + str(self.value)
 
     def __isub__(self, other):
-        self.res_value = self.__sub__(other)
+        _sub: ResourceDescriptor = self - other
+        # self.res_value = self.__sub__(other)
+        self.value = _sub.value
+        return self
 
     def __iadd__(self, other):
-        self.res_value = self.__add__(other)
+        _sum: ResourceDescriptor = self + other
+        # self.res_value = self.__add__(other)
+        self.value = _sum.value
+        return self
 
     def __ge__(self, other):
         return self.__gt__(other) or self.__eq__(other)
@@ -55,14 +65,21 @@ class ResourceDescriptor(abc.ABC):
     def __sub__(self, other):
         pass
 
-    def get_type(self) -> ResourceType:
-        return self.res_type
+    @property
+    def type(self) -> ResourceType:
+        return self._type
 
-    def set_value(self, value):
-        self.res_value = value
+    @type.setter
+    def type(self, value):
+        self._type = value
 
-    def get_value(self) -> string:
-        return self.res_value
+    @property
+    def value(self) -> string:
+        return self._value
+
+    @value.setter
+    def value(self, value):
+        self._value = value
 
 
 class IntegerResourceDescriptor(ResourceDescriptor):
@@ -71,16 +88,20 @@ class IntegerResourceDescriptor(ResourceDescriptor):
         super().__init__(res_type, res_value)
 
     def __gt__(self, other):
-        return int(self.res_value) > int(other.res_value)
+        return int(self.value) > int(other.value)
 
     def __eq__(self, other):
-        return int(other.res_value) == int(self.res_value)
+        return int(other.value) == int(self.value)
 
     def __add__(self, other):
-        return int(self.res_value) + int(other.res_value)
+        ret: IntegerResourceDescriptor = copy.deepcopy(self)
+        ret.value = (int(self.value) + int(other.value))
+        return ret
 
     def __sub__(self, other):
-        return int(self.res_value) - int(other.res_value)
+        ret: IntegerResourceDescriptor = copy.deepcopy(self)
+        ret.value = (int(self.value) - int(other.value))
+        return ret
 
 
 class MemoryAmountResourceDescriptor(IntegerResourceDescriptor):

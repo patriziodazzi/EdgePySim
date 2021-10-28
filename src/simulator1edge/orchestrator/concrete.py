@@ -21,7 +21,7 @@ class DomainOrchestrator(Orchestrator):
     def deploy(self, services: list[Microservice]) -> bool:
         pass
 
-    def list_of_suitable_devices(self, ms: Microservice) -> list[Device]:
+    def list_of_candidates(self, ms: Microservice) -> list[Device]:
         suitable_devices = [d for d in self.resources
                             if (Orchestrator.is_device_satisfying_all_requirements(d, ms.requirements))]
         return suitable_devices

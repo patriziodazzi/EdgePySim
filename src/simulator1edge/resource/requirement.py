@@ -11,9 +11,13 @@ class Requirement(abc.ABC):
         self.rd = rd
         self.matching_rule = matching_rule
 
+    @property
+    def resource_type(self):
+        return self.rd.type
+
     @abc.abstractmethod
     def __matching_rule__(self):
-        pass
+        return self.matching_rule
 
     def is_satisfied_by_resource(self, actual_resource: ResourceDescriptor) -> bool:
 

@@ -13,9 +13,10 @@ from simulator1edge.resource.requirement import StorageSpaceRequirement, Network
     MemoryAmountRequirement
 
 if __name__ == '__main__':
+
     # Create Application
     reqs = [StorageSpaceRequirement("1500"), NetworkBandwidthRequirement("10"), MemoryAmountRequirement("512")]
-    img = Image("ubuntu", 5000)
+    img = Image("ubuntu", 250)
     ms = Microservice("ms1", reqs, img)
     app = Application("Linux", [ms])
 
@@ -50,8 +51,7 @@ if __name__ == '__main__':
     cloud3 = CloudFactory({ComputingInfrastructureFactory.DEVS_FEAT: devices,
                            CloudFactory.INTL_NET_BNDWDTH_FEAT: 100,
                            CloudFactory.EXTL_NET_BNDWDTH_FEAT: 1000,
-                           CloudFactory.GTWY_FEAT: NetworkSwitchRouter(10),
-                           ComputingInfrastructureFactory.ORCHS_FEAT: CloudOrchestrator}).do_create_computing_instance()
+                           CloudFactory.GTWY_FEAT: NetworkSwitchRouter(10)}).do_create_computing_instance()
 
     # Create Continuum
     features = {ComputingContinuumBuildDirector.CMP_CNT_RES_FEAT: [cloud1, cloud2, cloud3]}
@@ -66,3 +66,24 @@ if __name__ == '__main__':
             node_size=120, node_color='red', linewidths=0.01, font_size=6, font_weight='bold',
             with_labels=True, ax=f.add_subplot(111))
     f.savefig("ciccio.png")
+
+    cloudorch: CloudOrchestrator = cloud3.orchestrator
+    resources_viable = cloudorch.list_of_candidates(ms)
+
+    for res in resources_viable:
+        print(res)
+        res.store_image(ms.image)
+        res.start_microservice(ms)
+
+
+    a = StorageSpaceResourceDescriptor(1200)
+    b = StorageSpaceResourceDescriptor(500)
+    c = a-b
+
+    print (c.value)
+
+
+    c+=b
+
+    print (c.value)
+
