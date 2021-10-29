@@ -29,14 +29,14 @@ class ComputingContinuumNetwork(Network):
     TORS = 'torus'
     CSTM = 'custom'
 
-    __STD_TPLGY = CLIQ
-    __STD_LNK_BND = 100
+    _STD_TPLGY = CLIQ
+    _STD_LNK_BND = 100
 
     def __init__(self, resources: list[ComputingInfrastructure]):
         super().__init__(None)
         self._resources = resources
-        self._topology = ComputingContinuumNetwork.__STD_TPLGY
-        self._link_bandwidth = ComputingContinuumNetwork.__STD_LNK_BND
+        self._topology = ComputingContinuumNetwork._STD_TPLGY
+        self._link_bandwidth = ComputingContinuumNetwork._STD_LNK_BND
 
     @property
     def resources(self) -> list[ComputingInfrastructure]:

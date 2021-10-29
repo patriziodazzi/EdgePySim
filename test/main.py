@@ -1,89 +1,70 @@
-import matplotlib.pyplot as plt
-import networkx as nx
+from typing import cast
 
 from simulator1edge.application.base import Image, Microservice, Application
-from simulator1edge.device.concrete import NetworkSwitchRouter
-from simulator1edge.device.generator import CloudDeviceFactory
-from simulator1edge.infrastructure.generator import CloudFactory, ComputingInfrastructureFactory, \
+from simulator1edge.device.concrete import NetworkSwitchRouter as Router
+from simulator1edge.device.generator import CloudDeviceFactory as CDF
+from simulator1edge.infrastructure.generator import CloudFactory as CF, ComputingInfrastructureFactory as CIF, \
     ComputingContinuumBuildDirector, ComputingContinuumBuilder
 from simulator1edge.orchestrator.concrete import CloudOrchestrator
-from simulator1edge.resource.descriptor import StorageSpaceResourceDescriptor, NetworkBandwidthResourceDescriptor, \
-    MemoryAmountResourceDescriptor
-from simulator1edge.resource.requirement import StorageSpaceRequirement, NetworkBandwidthRequirement, \
-    MemoryAmountRequirement
+from simulator1edge.resource.descriptor import StorageSpaceResourceDescriptor as STORAGE, \
+    NetworkBandwidthResourceDescriptor as NET_BANDWIDTH, MemoryAmountResourceDescriptor as MEMORY
+from simulator1edge.resource.requirement import StorageSpaceRequirement as STORAGEreq, \
+    NetworkBandwidthRequirement as NET_BANDWIDTHreq, MemoryAmountRequirement as MEMORYreq
 
 if __name__ == '__main__':
 
     # Create Application
-    reqs = [StorageSpaceRequirement("1500"), NetworkBandwidthRequirement("10"), MemoryAmountRequirement("512")]
+    reqs = [STORAGEreq("1500"), NET_BANDWIDTHreq("10"), MEMORYreq("512")]
     img = Image("ubuntu", 250)
     ms = Microservice("ms1", reqs, img)
     app = Application("Linux", [ms])
 
     # Create resources
-    hpc_res = [StorageSpaceResourceDescriptor("2000"),
-               NetworkBandwidthResourceDescriptor("1000"),
-               MemoryAmountResourceDescriptor("1024")]
-
-    avg_res = [StorageSpaceResourceDescriptor("1000"),
-               NetworkBandwidthResourceDescriptor("100"),
-               MemoryAmountResourceDescriptor("512")]
-
-    low_res = [StorageSpaceResourceDescriptor("500"),
-               NetworkBandwidthResourceDescriptor("50"),
-               MemoryAmountResourceDescriptor("256")]
-
+    hpc_res = [STORAGE("2000"), NET_BANDWIDTH("1000"), MEMORY("1024")]
+    avg_res = [STORAGE("1000"), NET_BANDWIDTH("100"), MEMORY("512")]
+    low_res = [STORAGE("500"), NET_BANDWIDTH("50"), MEMORY("256")]
     dev_res: list = [hpc_res, avg_res, low_res]
 
+    # Device and Cloud factory
+    device_factory = CDF([(hpc_res, 8), (avg_res, 2), (low_res, 1)])
+    cloud_factory = CF({CF.INTL_NET_BNDWDTH_FEAT: 100, CF.EXTL_NET_BNDWDTH_FEAT: 1000})
+
     # Create cloud#1
-    devices = CloudDeviceFactory().create_devices([(hpc_res, 8), (avg_res, 2), (low_res, 1)], {'cloud_name': "cloud1"})
-    cloud1 = CloudFactory({ComputingInfrastructureFactory.DEVS_FEAT: devices,
-                           CloudFactory.GTWY_FEAT: NetworkSwitchRouter(1000),
-                           CloudFactory.INTL_NET_BNDWDTH_FEAT: 1000}).do_create_computing_instance()
+    devices = device_factory.create_device_instances({CDF.CLD_NAM_FEAT: "cloud1"})
+    cloud1 = cloud_factory.create_computing_instance({CIF.DEVS_FEAT: devices, CF.GTWY_FEAT: Router(10)})
 
     # Create cloud#2
-    devices = CloudDeviceFactory().create_devices([(hpc_res, 2), (avg_res, 2), (low_res, 1)], {'cloud_name': "cloud2"})
-    cloud2 = CloudFactory({ComputingInfrastructureFactory.DEVS_FEAT: devices,
-                           CloudFactory.GTWY_FEAT: NetworkSwitchRouter(1000),
-                           CloudFactory.INTL_NET_BNDWDTH_FEAT: 1000}).do_create_computing_instance()
+    devices = device_factory.create_device_instances({CDF.CLD_NAM_FEAT: "cloud2"})
+    cloud2 = cloud_factory.create_computing_instance({CIF.DEVS_FEAT: devices, CF.GTWY_FEAT: Router(10)})
+
     # Create cloud#3
-    devices = CloudDeviceFactory().create_devices([(hpc_res, 2), (avg_res, 2), (low_res, 1)], {'cloud_name': "cloud3"})
-    cloud3 = CloudFactory({ComputingInfrastructureFactory.DEVS_FEAT: devices,
-                           CloudFactory.INTL_NET_BNDWDTH_FEAT: 100,
-                           CloudFactory.EXTL_NET_BNDWDTH_FEAT: 1000,
-                           CloudFactory.GTWY_FEAT: NetworkSwitchRouter(10)}).do_create_computing_instance()
+    devices = device_factory.create_device_instances({CDF.CLD_NAM_FEAT: "cloud3"})
+    cloud3 = cloud_factory.create_computing_instance({CIF.DEVS_FEAT: devices, CF.GTWY_FEAT: Router(10)})
 
     # Create Continuum
-    features = {ComputingContinuumBuildDirector.CMP_CNT_RES_FEAT: [cloud1, cloud2, cloud3]}
-    builder = ComputingContinuumBuildDirector(ComputingContinuumBuilder())
-    builder.construct(features)
-    cont = builder.result
+    continuum_builder = ComputingContinuumBuildDirector(ComputingContinuumBuilder())
+    continuum_builder.construct({ComputingContinuumBuildDirector.CMP_CNT_RES_FEAT: [cloud1, cloud2, cloud3]})
+    continuum = continuum_builder.result
 
-    # Show network graph
-    f = plt.figure()
-    nx.draw(cont.network.graph,
-            pos=nx.nx_pydot.graphviz_layout(cont.network.graph, prog="neato"),
-            node_size=120, node_color='red', linewidths=0.01, font_size=6, font_weight='bold',
-            with_labels=True, ax=f.add_subplot(111))
-    f.savefig("ciccio.png")
+    # Print network graph
+    continuum.draw_continuum("ciccio.png")
 
-    cloudorch: CloudOrchestrator = cloud3.orchestrator
-    resources_viable = cloudorch.list_of_candidates(ms)
+    # Ask the orchestrator of cloud #3 the all the resources able to host ms
+    cloud_orchestrator = cast(CloudOrchestrator, cloud3.orchestrator)
+    resources_viable = cloud_orchestrator.list_of_candidates(ms)
+    cloud_orchestrator.deploy([ms])
 
+    idx = 0
     for res in resources_viable:
         print(res)
-        res.store_image(ms.image)
-        res.start_microservice(ms)
+        if idx % 2:
+            res.store_image(ms.image)
+            res.start_microservice(ms)
 
+        idx += 1
 
-    a = StorageSpaceResourceDescriptor(1200)
-    b = StorageSpaceResourceDescriptor(500)
-    c = a-b
+    print("cucchiero")
 
-    print (c.value)
-
-
-    c+=b
-
-    print (c.value)
-
+    resources_viable = cloud_orchestrator.list_of_candidates(ms)
+    for res in resources_viable:
+        print(res)

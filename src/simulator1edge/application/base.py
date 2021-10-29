@@ -39,6 +39,12 @@ class Microservice(object):
         self.batch = batch
         self._length = length
 
+        self._id = hash(self)
+
+    @property
+    def id(self) -> string:
+        return self._id
+
     @property
     def name(self) -> string:
         return self._name

@@ -1,9 +1,8 @@
-import abc
 import string
-from typing import Any
+import matplotlib.pyplot as plt
+import networkx as nx
 
 from simulator1edge.network.base import Network
-from simulator1edge.network.core import ComputingContinuumNetwork
 from simulator1edge.orchestrator.concrete import ContinuumOrchestrator
 from simulator1edge.infrastructure.cluster import ComputingInfrastructure
 
@@ -40,5 +39,11 @@ class ComputingContinuum(object):
     def orchestrator(self, value: ContinuumOrchestrator):
         self._orchestrator = value
 
-
+    def draw_continuum(self, filename: string):
+        f = plt.figure()
+        nx.draw(self.network.graph,
+                pos=nx.nx_pydot.graphviz_layout(self.network.graph, prog="neato"),
+                node_size=120, node_color='red', linewidths=0.01, font_size=6, font_weight='bold',
+                with_labels=True, ax=f.add_subplot(111))
+        f.savefig(filename)
 

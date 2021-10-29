@@ -16,20 +16,20 @@ class Requirement(abc.ABC):
         return self.rd.type
 
     @abc.abstractmethod
-    def __matching_rule__(self):
+    def _matching_rule(self):
         return self.matching_rule
 
     def is_satisfied_by_resource(self, actual_resource: ResourceDescriptor) -> bool:
 
-        if self.__matching_rule__() == "eq":
+        if self._matching_rule() == "eq":
             return actual_resource == self.rd
-        elif self.__matching_rule__() == "gt":
+        elif self._matching_rule() == "gt":
             return actual_resource > self.rd
-        elif self.__matching_rule__() == "lt":
+        elif self._matching_rule() == "lt":
             return actual_resource < self.rd
-        elif self.__matching_rule__() == "ge":
+        elif self._matching_rule() == "ge":
             return actual_resource >= self.rd
-        elif self.__matching_rule__() == "le":
+        elif self._matching_rule() == "le":
             return actual_resource <= self.rd
 
         return False
@@ -47,7 +47,7 @@ class IntegerRequirement(Requirement):
         super().__init__(rd, matching)
         self.matching = matching
 
-    def __matching_rule__(self):
+    def _matching_rule(self):
         return self.matching
 
 

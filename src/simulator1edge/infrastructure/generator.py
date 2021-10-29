@@ -83,16 +83,16 @@ class ComputingInfrastructureFactory(ABC):
         self._network = value
 
     @abstractmethod
-    def do_create_computing_instance(self) -> ComputingInfrastructure:
+    def create_computing_instance(self) -> ComputingInfrastructure:
         raise NotImplementedError("You should implement this!")
 
 
 class CloudFactory(ComputingInfrastructureFactory):
     # Standard Values
-    __STD_INTL_NET_BNDWDTH = 100
-    __STD_EXTL_NET_BNDWDTH = 100
-    __STD_IS_RTD = True
-    __STD_GTWY = None
+    _STD_INTL_NET_BNDWDTH = 100
+    _STD_EXTL_NET_BNDWDTH = 100
+    _STD_IS_RTD = True
+    _STD_GTWY = None
 
     # Parameters Keys
     INTL_NET_BNDWDTH_FEAT = 'internal_bandwidth'
@@ -107,27 +107,22 @@ class CloudFactory(ComputingInfrastructureFactory):
         if CloudFactory.INTL_NET_BNDWDTH_FEAT in self.features:
             self._internal_bandwidth = self.features[CloudFactory.INTL_NET_BNDWDTH_FEAT]
         else:
-            self._internal_bandwidth = CloudFactory.__STD_INTL_NET_BNDWDTH
+            self._internal_bandwidth = CloudFactory._STD_INTL_NET_BNDWDTH
 
         # If external_bandwidth is provided, uses it, otherwise uses the standard value
         if CloudFactory.EXTL_NET_BNDWDTH_FEAT in self.features:
             self._external_bandwidth = self.features[CloudFactory.EXTL_NET_BNDWDTH_FEAT]
         else:
-            self._external_bandwidth = CloudFactory.__STD_EXTL_NET_BNDWDTH
+            self._external_bandwidth = CloudFactory._STD_EXTL_NET_BNDWDTH
 
         # If is_routed is provided, uses it, otherwise uses the standard value
         if CloudFactory.IS_RTD_FEAT in self.features:
             self._is_routed = self.features[CloudFactory.IS_RTD_FEAT]
         else:
-            self._is_routed = CloudFactory.__STD_IS_RTD
-
-        # If gateway is provided, uses it, otherwise uses the standard value
-        if CloudFactory.GTWY_FEAT in self.features:
-            self._gateway = self.features[CloudFactory.GTWY_FEAT]
-        else:
-            self._gateway = CloudFactory.__STD_GTWY
+            self._is_routed = CloudFactory._STD_IS_RTD
 
         self._computing_infrastructure = None
+        self._gateway = None
 
     @property
     def internal_bandwidth(self) -> int:
@@ -165,7 +160,38 @@ class CloudFactory(ComputingInfrastructureFactory):
     def computing_infrastructure(self):
         return self._computing_infrastructure
 
-    def do_create_computing_instance(self) -> ComputingInfrastructure:
+    def create_computing_instance(self, instance_features: dict[string, Any] = None) -> ComputingInfrastructure:
+
+        if instance_features:
+            if ComputingInfrastructureFactory.DEVS_FEAT in instance_features:
+                self._devices = instance_features[ComputingInfrastructureFactory.DEVS_FEAT]
+            else:
+                self._devices = None
+
+            # If network is provided, does not create it
+            if ComputingInfrastructureFactory.NTWRK_FEAT in instance_features:
+                self._network = instance_features[ComputingInfrastructureFactory.NTWRK_FEAT]
+            else:
+                self._network = None
+
+            # If orchestrator is provided, does not create it
+            if ComputingInfrastructureFactory.ORCHS_FEAT in instance_features:
+                self._orchestrator = instance_features[ComputingInfrastructureFactory.ORCHS_FEAT]
+            else:
+                self._orchestrator = None
+
+        # If gateway is provided, uses it, otherwise uses the standard value
+        if CloudFactory.GTWY_FEAT in self.features:
+            self._gateway = self.features[CloudFactory.GTWY_FEAT]
+        else:
+            self._gateway = CloudFactory._STD_GTWY
+
+        if instance_features:
+            # If gateway is provided, uses it, otherwise uses the standard value
+            if CloudFactory.GTWY_FEAT in instance_features:
+                self._gateway = instance_features[CloudFactory.GTWY_FEAT]
+            else:
+                self._gateway = CloudFactory._STD_GTWY
 
         # if network has not been provided, creates it
         if not self.network:
