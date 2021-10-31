@@ -21,10 +21,12 @@ class DomainOrchestrator(Orchestrator):
         super().__init__(devices, network)
 
     def deploy(self, services: list[Microservice]) -> bool:
+        result: bool = True
         for service in services:
             candidate_resources = self.list_of_candidates(service)
             image_locations = self._find_image(service.image.name)
-            self._place_service(candidate_resources, image_locations)
+            result = result and self._place_service(service, candidate_resources, image_locations)
+        return result
 
     def list_of_candidates(self, ms: Microservice) -> list[Device]:
         suitable_devices = \
@@ -33,11 +35,26 @@ class DomainOrchestrator(Orchestrator):
 
     # TODO add the second part: image located outside the cloud
     def _find_image(self, image_name) -> (list[Device], list[Union[Device, ComputingInfrastructure]]):
-        image_locations = [i for i in self.resources if (image_name in cast(Device, i).images)]
-        return image_locations
+        image_locations: list = [i for i in self.resources if (image_name in cast(Device, i).images)]
+        return image_locations, None
 
-    def _place_service(self, candidate_resources, image_locations):
-        pass
+    def _place_service(self, service: Microservice, candidate_resources: list[Device],
+                       image_locations: (list[Device], list[Union[Device, ComputingInfrastructure]])) -> bool:
+
+        # intersect resource candidates with resources having images
+        local_image_locations: list = image_locations[0]
+        print(local_image_locations)
+        available_candidates_with_image = list(filter(lambda x: x in candidate_resources, local_image_locations))
+        if not available_candidates_with_image:
+            target_device = candidate_resources.pop()
+            if local_image_locations:
+                if target_device.has_enough_space_for_image(service.image.storage_space_requirements().rd.value):
+                    target_device.retrieve_image_from(service.image, local_image_locations[0])
+        else:
+            target_device = available_candidates_with_image.pop()
+
+        target_device.start_microservice(service)
+        return True
 
 
 class CloudOrchestrator(DomainOrchestrator):
@@ -45,7 +62,7 @@ class CloudOrchestrator(DomainOrchestrator):
         super().__init__(cloud_resources, network)
 
     def deploy(self, services: list[Microservice]) -> bool:
-        pass
+        super().deploy(services)
 
 
 class EdgeOrchestrator(DomainOrchestrator):

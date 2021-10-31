@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import copy
 import string
 
@@ -9,9 +11,11 @@ class Device(object):
     _num_of_devices: int = 0
 
     def __init__(self, resources: list[ResourceDescriptor]):
+
         Device._num_of_devices += 1
         self._name = str("device." + str(Device._num_of_devices))
-        self._resources: dict[ResourceType, ResourceDescriptor] = {copy.deepcopy(res.type): copy.deepcopy(res) for res in resources}
+        self._resources: dict[ResourceType, ResourceDescriptor] = {copy.deepcopy(res.type): copy.deepcopy(res) for res
+                                                                   in resources}
 
         self._images: dict[string, Image] = {}
         self.microservices: dict[string, Microservice] = {}
@@ -20,29 +24,33 @@ class Device(object):
         return self.name
 
     # private service methods
-    def _enough_space_for_the_image(self, size) -> bool:
-        space = int(self.resources[ResourceType.STORAGE].value)
-        if space > size:
-            return True
-        else:
-            return False
-
-    def _allocate_image(self, img):
+    def _allocate_space_for_image(self, img):
         new_space = int(self.resources[ResourceType.STORAGE].value) - img.size
         self.resources[ResourceType.STORAGE].value = (str(new_space))
 
-    def _enough_resources_for_the_microservice(self, microservice) -> bool:
-        satisfied = True
-        for req in microservice.requirements:
-            satisfied = satisfied and req.is_satisfied_by_resource(self.resources.get(req.resource_type))
-        return satisfied
-
     def _create_and_start_microservice(self, microservice):
-        self._reduce_resources_availability(microservice)
+        self._assign_resources_to_microservice(microservice)
 
     # TODO: provide implementation
-    def _free_microservice_resources(self, param):
-        pass
+    def _free_microservice_resources(self, microservice: Microservice):
+
+        # check if the device has enough resources to run the microservice
+        assert self.has_microservice(microservice)
+
+        for req in microservice.requirements:
+            resource_availability = self.resources[req.resource_type]
+            resource_availability += req.rd
+            self.resources[req.resource_type] = resource_availability
+
+    def _assign_resources_to_microservice(self, microservice):
+
+        # check if the device has enough resources to run the microservice
+        assert self.has_enough_resources_for_microservice(microservice)
+
+        for req in microservice.requirements:
+            resource_availability = self.resources[req.resource_type]
+            resource_availability -= req.rd
+            self.resources[req.resource_type] = resource_availability
 
     # public properties
     @property
@@ -61,7 +69,20 @@ class Device(object):
     def images(self):
         return self._images
 
-    def is_image_available(self, name: string) -> bool:
+    def has_enough_space_for_image(self, size: int) -> bool:
+        space = int(self.resources[ResourceType.STORAGE].value)
+        if space > size:
+            return True
+        else:
+            return False
+
+    def has_enough_resources_for_microservice(self, microservice) -> bool:
+        satisfied = True
+        for req in microservice.requirements:
+            satisfied = satisfied and req.is_satisfied_by_resource(self.resources.get(req.resource_type))
+        return satisfied
+
+    def has_image(self, name: string) -> bool:
         return name in self.images
 
     def get_image_with_name(self, name: string) -> Image:
@@ -69,11 +90,31 @@ class Device(object):
 
     # TODO check if image is already stored
     def store_image(self, img: Image) -> bool:
-        if self._enough_space_for_the_image(img.size):
-            self._allocate_image(img)
-            self.images[img.name] = img
-            return True
-        return False
+
+        assert self.has_enough_space_for_image(img.size), \
+            f"Not enough space available on device {self.name} for Image {img.name}, space availability should be " \
+            f"checked with method has_enough_space_for image(image_name)."
+
+        self._allocate_space_for_image(img)
+        self.images[img.name] = img
+        return True
+
+    def retrieve_image_from(self, image: Image, device: Device) -> bool:
+
+        # check if the source device has the image
+        assert device.has_image(image.name), \
+            f"Image {image.name} not available on device {device}, " \
+            f"image availability should be checked with method has_image(image_name)."
+
+        img_descriptor: Image = device.get_image_with_name(image.name)
+
+        assert self.has_enough_space_for_image(img_descriptor.storage_space_requirements().rd.value), \
+            f"Not enough space available on device {self.name} for Image {image.name}, space availability should be " \
+            f"checked with method has_enough_space_for image(image_name)."
+
+        self.store_image(img_descriptor)
+
+        return True
 
     def get_microservice(self, microservice: Microservice) -> dict[string, Microservice]:
         output: dict[string, Microservice] = {}
@@ -90,30 +131,31 @@ class Device(object):
         return False
 
     def start_microservice(self, microservice: Microservice) -> string:
+
+        srv_img = microservice.image.name
+
         # check if image already available on the current machine
-        if microservice.image.name not in self.images:
-            return None
+        assert srv_img in self.images, \
+            f"Image {srv_img} not available on device {self.name}, " \
+            f"image availability should be checked with method has_image(image_name) before starting any microservice."
 
         # check if there are enough resources available on the device
-        if not self._enough_resources_for_the_microservice(microservice):
-            return None
-        else:
-            self._create_and_start_microservice(microservice)
+        assert self.has_enough_resources_for_microservice(microservice), \
+            f"Resources not available on device {self.name} for microservice {microservice.name} " \
+            f"resources availability should be checked with method " \
+            f"has_enough_resources_for_microservice(microservice) before starting any microservice."
+
+        # create microservice
+        self._create_and_start_microservice(microservice)
 
         # store microservice handle in the internal data structure
         self.microservices[microservice.id] = microservice
 
-    def terminate_microservice(self, microservice_handler: string) -> bool:
+    def terminate_microservice(self, microservice_handler: Microservice) -> bool:
+
         # TODO: we must check the ms is the last one to unpin image
-        if microservice_handler in self.microservices:
+        if microservice_handler.name in self.microservices:
             self._free_microservice_resources(self.microservices[microservice_handler])
             del self.microservices[microservice_handler]
             return True
         return False
-
-    def _reduce_resources_availability(self, microservice):
-        if self._enough_resources_for_the_microservice(microservice):
-            for req in microservice.requirements:
-                resource_availability = self.resources[req.resource_type]
-                resource_availability -= req.rd
-                self.resources[req.resource_type] = resource_availability

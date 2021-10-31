@@ -1,6 +1,6 @@
 import string
 
-from simulator1edge.resource.requirement import Requirement
+from simulator1edge.resource.requirement import Requirement, StorageSpaceRequirement
 
 
 class Volume(object):
@@ -11,11 +11,16 @@ class Volume(object):
 
 class Image(object):
 
+    # TODO: consider to decouple images from Image descriptors
     def __init__(self, name: string, size: int):
         self.name = name
         self.size = size
         self.stored_in_device = None
         self.in_use_on_this_device = False
+        self._storage_space_requirements = StorageSpaceRequirement(size)
+
+    def storage_space_requirements(self) -> Requirement:
+        return self._storage_space_requirements
 
 
 class Microservice(object):

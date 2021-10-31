@@ -17,13 +17,13 @@ if __name__ == '__main__':
     reqs = [STORAGEreq("1500"), NET_BANDWIDTHreq("10"), MEMORYreq("512")]
     img = Image("ubuntu", 250)
     ms = Microservice("ms1", reqs, img)
-    app = Application("Linux", [ms])
+    # app = Application("Linux", [ms])
 
     # Create resources
     hpc_res = [STORAGE("2000"), NET_BANDWIDTH("1000"), MEMORY("1024")]
     avg_res = [STORAGE("1000"), NET_BANDWIDTH("100"), MEMORY("512")]
     low_res = [STORAGE("500"), NET_BANDWIDTH("50"), MEMORY("256")]
-    dev_res: list = [hpc_res, avg_res, low_res]
+    # dev_res: list = [hpc_res, avg_res, low_res]
 
     # Device and Cloud factory
     device_factory = CDF([(hpc_res, 8), (avg_res, 2), (low_res, 1)])
@@ -52,19 +52,37 @@ if __name__ == '__main__':
     # Ask the orchestrator of cloud #3 the all the resources able to host ms
     cloud_orchestrator = cast(CloudOrchestrator, cloud3.orchestrator)
     resources_viable = cloud_orchestrator.list_of_candidates(ms)
+
+    cloud3.devices[0].store_image(ms.image)
+
+    cloud_orchestrator.deploy([ms])
+    cloud_orchestrator.deploy([ms])
+    cloud_orchestrator.deploy([ms])
     cloud_orchestrator.deploy([ms])
 
-    idx = 0
-    for res in resources_viable:
-        print(res)
-        if idx % 2:
-            res.store_image(ms.image)
-            res.start_microservice(ms)
+    cloud_orchestrator.deploy([ms])
+    cloud_orchestrator.deploy([ms])
+    cloud_orchestrator.deploy([ms])
+    cloud_orchestrator.deploy([ms])
 
-        idx += 1
-
-    print("cucchiero")
-
-    resources_viable = cloud_orchestrator.list_of_candidates(ms)
-    for res in resources_viable:
-        print(res)
+    # idx = 0
+    # for res in resources_viable:
+    #     print(res)
+    #     if idx % 2:
+    #         res.store_image(ms.image)
+    #         res.start_microservice(ms)
+    #
+    #     idx += 1
+    #
+    # print("cucchiero")
+    #
+    # resources_viable = cloud_orchestrator.list_of_candidates(ms)
+    # for res in resources_viable:
+    #     print(res)
+    #
+    # print(cloud3.devices[0])
+    # cloud3.devices[0].terminate_microservice(ms)
+    #
+    # resources_viable = cloud_orchestrator.list_of_candidates(ms)
+    # for res in resources_viable:
+    #     print(res)
