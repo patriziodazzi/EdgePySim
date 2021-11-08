@@ -1,10 +1,14 @@
+from __future__ import annotations
+
 import string
 from abc import ABC, abstractmethod
 from typing import Any
 
-from simulator1edge.device.base import Device
+# from simulator1edge.device.base import Device
+# from simulator1edge.resource.descriptor import ResourceDescriptor
+
+from simulator1edge.core import *
 from simulator1edge.device.concrete import CloudDevice
-from simulator1edge.resource.descriptor import ResourceDescriptor
 
 
 class DeviceFactory(ABC):

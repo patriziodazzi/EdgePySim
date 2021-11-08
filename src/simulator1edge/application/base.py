@@ -1,6 +1,10 @@
+from __future__ import annotations
+
 import string
 
-from simulator1edge.resource.requirement import Requirement, StorageSpaceRequirement
+from simulator1edge.core import *
+
+# from simulator1edge.resource.requirement import Requirement, StorageSpaceRequirement
 
 
 class Volume(object):

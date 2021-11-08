@@ -1,7 +1,11 @@
-from simulator1edge.application.base import Microservice
-from simulator1edge.device.base import Device
-from simulator1edge.network.base import Network
-from simulator1edge.resource.requirement import Requirement
+from __future__ import annotations
+
+# from simulator1edge.application.base import Microservice, Image
+# from simulator1edge.device.base import Device
+# from simulator1edge.network.base import Network
+# from simulator1edge.resource.requirement import Requirement
+
+from simulator1edge.core import *
 
 
 class Orchestrator(object):
@@ -37,3 +41,11 @@ class Orchestrator(object):
     @staticmethod
     def is_device_satisfying_all_requirements(dev: Device, rs: list[Requirement]) -> bool:
         return all(map(lambda r: Orchestrator.is_device_satisfying_requirement(dev, r), rs))
+
+    @classmethod
+    def is_device_having_the_image_locally(cls, dev: Device, image: Image):
+        return dev.has_image(image.name)
+
+    @classmethod
+    def is_device_having_room_for_storing_the_image(cls, dev: Device, image: Image):
+        return dev.has_enough_space_for_image(image.storage_space_requirements().rd.value)

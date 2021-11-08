@@ -1,7 +1,12 @@
-from simulator1edge.device.base import Device
-from simulator1edge.infrastructure.base import ComputingInfrastructure
-from simulator1edge.network.base import Network
-from simulator1edge.orchestrator.base import Orchestrator
+from __future__ import annotations
+
+from simulator1edge.core import *
+
+
+# from simulator1edge.device.base import Device
+# from simulator1edge.infrastructure.base import ComputingInfrastructure
+# from simulator1edge.network.base import Network
+# from simulator1edge.orchestrator.base import Orchestrator
 
 
 class Cloud(ComputingInfrastructure):

@@ -17,7 +17,8 @@ class EndToEndNetwork(Network):
         super().__init__()
         network_graph.add_node(end_point_a)
         network_graph.add_node(end_point_b)
-        network_graph.add_edge(end_point_a, end_point_b, bandwidth=bandwidth)
+        network_graph.add_edge(end_point_a, end_point_b, capacity=bandwidth)
+        print("Linking "+end_point_a+" with "+end_point_b+ " with a bandwidth of: "+bandwidth)
 
 
 class ComputingContinuumNetwork(Network):
@@ -61,18 +62,18 @@ class ComputingContinuumNetwork(Network):
 
         if self._topology == ComputingContinuumNetwork.CLIQ:
             for a in itertools.combinations(self.resources, 2):
-                self.graph.add_edge(a[0].network.gateway, a[1].network.gateway, weight=self.link_bandwidth)
+                self.graph.add_edge(a[0].network.gateway, a[1].network.gateway, capacity=self.link_bandwidth)
 
         if self._topology == ComputingContinuumNetwork.TORS:
             idx: int = -1
             for idx in range(len(self.resources) - 1):
-                self.graph.add_edge(self.resources[idx].network.gateway, self.resources[idx + 1].network.gateway, weight=self.link_bandwidth)
-            self.graph.add_edge(self.resources[idx + 1].network.gateway, self.resources[0].network.gateway, weight=self.link_bandwidth)
+                self.graph.add_edge(self.resources[idx].network.gateway, self.resources[idx + 1].network.gateway, capacity=self.link_bandwidth)
+            self.graph.add_edge(self.resources[idx + 1].network.gateway, self.resources[0].network.gateway, capacity=self.link_bandwidth)
 
         if self._topology == ComputingContinuumNetwork.CSTM:
             links = features[ComputingContinuumNetwork.CSTM_LNKS_FEAT]
             for (i, j, k) in links:
-                self.graph.add_edge(self.resources[i].network.gateway, self.resources[j].network.gateway, weight=k)
+                self.graph.add_edge(self.resources[i].network.gateway, self.resources[j].network.gateway, capacity=k)
 
         graph = self.graph
         for computing_infrastructure in self.resources:

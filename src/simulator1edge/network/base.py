@@ -1,6 +1,7 @@
 import networkx as nx
+import networkx.algorithms.flow.maxflow as mf
 
-from simulator1edge.device.base import Device
+from simulator1edge.core import *
 
 
 class Network(object):
@@ -24,3 +25,6 @@ class Network(object):
     @gateway.setter
     def gateway(self, value: Device):
         self._gateway = value
+
+    def bandwidth(self, src: Device, dest: Device):
+        return mf.maximum_flow_value(self.graph, src, dest)

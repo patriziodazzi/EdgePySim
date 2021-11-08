@@ -1,7 +1,10 @@
+from __future__ import annotations
 import string
 
-from simulator1edge.device.base import Device
-from simulator1edge.resource.descriptor import ResourceDescriptor, NetworkBandwidthResourceDescriptor
+#from simulator1edge.device.base import Device
+#from simulator1edge.resource.descriptor import ResourceDescriptor, NetworkBandwidthResourceDescriptor
+
+from simulator1edge.core import *
 
 
 class EdgeDevice(Device):

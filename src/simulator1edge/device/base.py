@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import copy
 import string
-
-from simulator1edge.application.base import Image, Microservice
-from simulator1edge.resource.descriptor import ResourceDescriptor, ResourceType
+from simulator1edge.core import *
+# from simulator1edge.application.base import Image, Microservice
+# from simulator1edge.resource.descriptor import ResourceDescriptor, ResourceType
+from simulator1edge.util.environment import Simulation
 
 
 class Device(object):
@@ -13,7 +14,7 @@ class Device(object):
     def __init__(self, resources: list[ResourceDescriptor]):
 
         Device._num_of_devices += 1
-        self._name = str("device." + str(Device._num_of_devices))
+        self._name = str("Device-" + str(Device._num_of_devices))
         self._resources: dict[ResourceType, ResourceDescriptor] = {copy.deepcopy(res.type): copy.deepcopy(res) for res
                                                                    in resources}
 
@@ -106,6 +107,7 @@ class Device(object):
             f"Image {image.name} not available on device {device}, " \
             f"image availability should be checked with method has_image(image_name)."
 
+        # Simulation().env.process()
         img_descriptor: Image = device.get_image_with_name(image.name)
 
         assert self.has_enough_space_for_image(img_descriptor.storage_space_requirements().rd.value), \

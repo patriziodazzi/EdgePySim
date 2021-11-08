@@ -10,8 +10,12 @@ from simulator1edge.resource.descriptor import StorageSpaceResourceDescriptor as
     NetworkBandwidthResourceDescriptor as NET_BANDWIDTH, MemoryAmountResourceDescriptor as MEMORY
 from simulator1edge.resource.requirement import StorageSpaceRequirement as STORAGEreq, \
     NetworkBandwidthRequirement as NET_BANDWIDTHreq, MemoryAmountRequirement as MEMORYreq
+from simulator1edge.util.environment import Simulation
 
 if __name__ == '__main__':
+
+    # Create Simulation Environment
+    sim = Simulation()
 
     # Create Application
     reqs = [STORAGEreq("1500"), NET_BANDWIDTHreq("10"), MEMORYreq("512")]
@@ -38,6 +42,7 @@ if __name__ == '__main__':
     cloud2 = cloud_factory.create_computing_instance({CIF.DEVS_FEAT: devices, CF.GTWY_FEAT: Router(10)})
 
     # Create cloud#3
+    device_factory = CDF([(hpc_res, 4), (avg_res, 2), (low_res, 1)])
     devices = device_factory.create_device_instances({CDF.CLD_NAM_FEAT: "cloud3"})
     cloud3 = cloud_factory.create_computing_instance({CIF.DEVS_FEAT: devices, CF.GTWY_FEAT: Router(10)})
 
@@ -60,10 +65,6 @@ if __name__ == '__main__':
     cloud_orchestrator.deploy([ms])
     cloud_orchestrator.deploy([ms])
 
-    cloud_orchestrator.deploy([ms])
-    cloud_orchestrator.deploy([ms])
-    cloud_orchestrator.deploy([ms])
-    cloud_orchestrator.deploy([ms])
 
     # idx = 0
     # for res in resources_viable:
@@ -86,3 +87,6 @@ if __name__ == '__main__':
     # resources_viable = cloud_orchestrator.list_of_candidates(ms)
     # for res in resources_viable:
     #     print(res)
+    sim.run()
+
+    print(sim.env.now)

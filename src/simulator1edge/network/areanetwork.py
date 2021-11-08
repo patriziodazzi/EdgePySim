@@ -1,10 +1,12 @@
 import itertools
 
-from simulator1edge.device.base import Device
+# from simulator1edge.network.base import Network
+# from simulator1edge.device.base import Device
 from simulator1edge.device.concrete import CloudDevice, NetworkSwitchRouter
-from simulator1edge.network.base import Network
+from simulator1edge.core import *
 
 
+# TODO consider to use weigth for latancy
 class CloudAreaNetwork(Network):
     num_of_cans: int = 0
 
@@ -34,13 +36,13 @@ class CloudAreaNetwork(Network):
         # cloud devices)
         for device in devices:
             self.graph.add_node(device)
-            if self._gateway not in devices:
-                self.graph.add_edge(device, self._gateway)
+            # if self._gateway not in devices:
+            self.graph.add_edge(device, self._gateway, capacity=internal_bandwidth)
 
         # Links all the devices one each others
         self.internal_bandwidth = internal_bandwidth
-        for a in itertools.combinations(devices, 2):
-            self.graph.add_edge(a[0], a[1], weight=self.internal_bandwidth)
+        # for a in itertools.combinations(devices, 2):
+        #     self.graph.add_edge(a[0], a[1], capacity=self.internal_bandwidth)
 
     def add_device(self, device: Device) -> bool:
 
@@ -50,7 +52,8 @@ class CloudAreaNetwork(Network):
         self.graph.add_node(device)
 
         for neighbor in self.graph.nodes:
-            self.graph.add_edge(device, neighbor, weight=self.internal_bandwidth)
+            self.graph.add_edge(device, neighbor, capacity=self.internal_bandwidth)
+            print(f"Create a link from {device} to {neighbor} of capacity {self.internal_bandwidth}")
         return True
 
     def remove_device(self, node: Device) -> bool:
